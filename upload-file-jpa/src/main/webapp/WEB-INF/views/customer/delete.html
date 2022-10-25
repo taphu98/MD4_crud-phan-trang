@@ -6,12 +6,14 @@
 </head>
 <body>
 <h1>Form Delete</h1>
-<a href="/">Back</a>
+<a href="/customer">Back</a>
 <form action="/delete" method="post" th:object="${customer}">
 <table>
     <td th:type="hidden" th:name="id" th:field="*{id}"></td>
     <td>NAME</td>
     <td th:text="${customer.name}"></td>
+    <td>AGE</td>
+    <td th:text="${customer.age}"></td>
 </table>
 </form>
 </body>

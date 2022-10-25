@@ -6,13 +6,15 @@
 </head>
 <body>
 <h1>Create Customer</h1>
-<a href="/">Back</a>
+<a href="/customer">Back</a>
 <form th:action="@{/create-customer}" th:object="${customer}" method="post">
-<table>
     <label>Name</label>
-    <input type="text" th:field="*{name}">
-    <button>Create</button>
-</table>
+    <span style="color: red" th:if="${#fields.hasErrors('name')}" th:error="*{name}">The name must more than 2 and less than 10 and not required!</span><br>
+    <input type="text" name="name" th:field="*{name}"><br>
+    <label>Age</label>
+    <span style="color: red" th:if="${#fields.hasErrors('age')}" th:error="*{age}">The age is more than 5</span><br>
+    <input type="text" name="age" th:field="*{age}"><br>
+    <button type="submit">Create</button>
 
 </form>
 </body>

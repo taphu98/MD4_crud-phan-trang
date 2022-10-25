@@ -6,10 +6,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import rikkei.academy.model.Customer;
 import rikkei.academy.service.ICustomerService;
+import rikkei.academy.validate.ValidateUsername;
 
 import java.util.List;
 
@@ -18,10 +21,13 @@ public class CustomerController {
     @Autowired
     ICustomerService customerService;
 
+    @Autowired
+    ValidateUsername validateUsername;
     @GetMapping("/customer")
     public ModelAndView showList(@PageableDefault(sort = "name", size = 3) Pageable pageable ) {
+        Page<Customer> customerPage = customerService.findAll(pageable);
         ModelAndView modelAndView = new ModelAndView("/customer/index");
-        modelAndView.addObject("customers", customerService.findAll(pageable));
+        modelAndView.addObject("customers", customerPage);
         return modelAndView;
     }
 
@@ -33,11 +39,14 @@ public class CustomerController {
     }
 
     @PostMapping("/create-customer")
-    public ModelAndView createCustomer(@ModelAttribute("customer") Customer customer) {
+    public String createCustomer(@Validated @ModelAttribute("customer") Customer customer, BindingResult bindingResult) {
+        validateUsername.validate(customer,bindingResult);
+        if (bindingResult.hasFieldErrors()){
+            return "/customer/create";
+        }
+
         customerService.save(customer);
-        ModelAndView modelAndView = new ModelAndView("/customer/create");
-        modelAndView.addObject("customer", new Customer());
-        return modelAndView;
+        return "redirect:/customer";
     }
 
     @GetMapping("/edit/{id}")
@@ -57,7 +66,19 @@ public class CustomerController {
     @GetMapping("/delete/{id}")
     public String showDeleteForm(@PathVariable Long id){
         customerService.deleteById(id);
-        return "redirect:/";
+        return "redirect:/customer";
+    }
+    @GetMapping("/search")
+    public ModelAndView searchProduct(@RequestParam("search")String search, Pageable pageable){
+        Page<Customer> customerPage;
+        if (!search.trim().equals("")){
+            customerPage = customerService.findByNameCustomer(search,pageable);
+        }else {
+            customerPage = customerService.findAll(pageable);
+        }
+        ModelAndView modelAndView = new ModelAndView("/customer/index");
+        modelAndView.addObject("pageCustomer",customerPage);
+        return modelAndView;
     }
 
 }

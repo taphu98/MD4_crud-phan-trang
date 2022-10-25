@@ -6,17 +6,20 @@
 </head>
 <body>
 <h1>Edit form</h1>
-<a href="/">Back</a>
+<a href="/customer">Back</a>
 <form th:action="@{/edit-customer}" method="post" th:object="${customer}">
     <table>
         <tr>
+            <th></th>
             <th>NAME</th>
+            <th>AGE</th>
         </tr>
         <tr>
             <td><input type="hidden" th:field="*{id}"></td>
             <td><input type="text" th:field="*{name}"></td>
+            <td><input type="text" th:field="*{age}"></td>
         </tr>
-        <button>Edit</button>
+        <tr><button>Edit</button></tr>
     </table>
 
 </form>

@@ -37,4 +37,15 @@ public class CustomerServiceIMPL implements ICustomerService{
 
         return customerRepository.findAll(pageable);
     }
+
+    @Override
+    public Page<Customer> findAllByNameContaining(String name, Pageable pageable) {
+        return customerRepository.findAllByNameContaining(name,pageable);
+    }
+
+    @Override
+    public Page<Customer> findByNameCustomer(String name, Pageable pageable) {
+        return customerRepository.findByNameCustomer(name,pageable);
+    }
+
 }
